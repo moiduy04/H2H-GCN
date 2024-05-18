@@ -16,19 +16,19 @@ class GeometricTransformations:
 
         :param x: (batch_size, d+1)
         """
-        d = x.size(-1) - 1
-        return x.narrow(-1, 1, d) / (x.narrow(-1, 0, 1) + 1)
+        return x.narrow(-1, 1, x.size(-1)-1) / (x.narrow(-1, 0, 1) + 1)
 
     @staticmethod
-    def poincare_to_lorentz(x):
+    def poincare_to_lorentz(b):
         """
         Transform Poincaré coordinates to Lorentz model coordinates.
 
-        :param x: (batch_size, d)
+        :param b: (batch_size, d)
         """
-        x_norm_square = x.pow(2).sum(-1, keepdim=True)
-        return torch.cat((1 + x_norm_square, 2 * x), dim=1) \
-            / (1 - x_norm_square + LorentzManifold.eps)
+        b_norm_square = b.pow(2).sum(-1, keepdim=True)
+        x = torch.cat((1 + b_norm_square, 2 * b), dim=1) \
+            / (1 - b_norm_square + LorentzManifold.eps)
+        return x
 
     @staticmethod
     def lorentz_to_klein(x):
@@ -37,24 +37,23 @@ class GeometricTransformations:
 
         :param x: (batch_size, d+1)
         """
-        d = x.size(-1) - 1
-        return x.narrow(-1, 1, d) / (x.narrow(-1, 0, 1) + 1)
+        return x.narrow(-1, 1, x.size(-1)-1) / (x.narrow(-1, 0, 1))
 
     @staticmethod
-    def klein_to_lorentz(x, *, device='cpu'):
+    def klein_to_lorentz(k, *, device='cpu'):
         """
         Transform Klein coordinates to Lorentz model coordinates.
 
-        :param x: (batch_size, d)
+        :param k: (batch_size, d)
         :param device
         """
-        x_norm_square = x.pow(2).sum(-1, keepdim=True)
-        x_norm_square = torch.clamp(x_norm_square, max=0.9)
-        tmp = torch.ones((x.size(0), 1)).cuda().to(device)
-        tmp1 = torch.cat((tmp, x), dim=1)
-        tmp2 = 1.0 / torch.sqrt(1.0 - x_norm_square)
-        tmp3 = (tmp1 * tmp2)
-        return tmp3
+        k_norm_square = k.pow(2).sum(-1, keepdim=True)
+        # Due to precision errors, we clip the norm to 0.9
+        k_norm_square = torch.clamp(k_norm_square, max=0.9)
+        ones = torch.ones((k.size(0), 1)).cuda().to(device)
+        x = torch.cat((ones, k), dim=1) \
+            / torch.sqrt(1.0 - k_norm_square)
+        return x
 
     @staticmethod
     def poincare_to_klein(x):
