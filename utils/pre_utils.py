@@ -13,7 +13,7 @@ import subprocess
 import random
 
 
-def set_seed(seed):
+def set_seed(args, seed: int):
     """
     Set the random seed
     """
@@ -22,9 +22,10 @@ def set_seed(seed):
     th.manual_seed(seed)
     th.cuda.manual_seed(seed)
     th.cuda.manual_seed_all(seed)
+    args.split_seed = seed
 
 
-def pad_sequence(data_list, maxlen, value=0):
+def pad_sequence(data_list, maxlen: int, value: int = 0):
     return [row + [value] * (maxlen - len(row)) for row in data_list]
 
 

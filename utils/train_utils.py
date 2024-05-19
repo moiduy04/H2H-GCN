@@ -1,3 +1,4 @@
+import argparse
 import os
 import numpy as np
 import torch
@@ -48,7 +49,6 @@ def add_flags_from_config(parser, config_dict):
     """
     Adds a flag (and default value) to an ArgumentParser for each parameter in a config
     """
-
     def OrNone(default):
         def func(x):
             # Convert "none" to proper None object
@@ -60,7 +60,6 @@ def add_flags_from_config(parser, config_dict):
             # Otherwise, default has non-None type; convert x to that type
             else:
                 return type(default)(x)
-
         return func
 
     for param in config_dict:
