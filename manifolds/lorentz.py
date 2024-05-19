@@ -34,13 +34,14 @@ class LorentzManifold:
         return torch.clamp(sqdist, max=50.0)
 
     @staticmethod
-    def lorenz_factor(x, *, dim=-1, keepdim=False):
+    def lorentz_factor(x, *, dim=-1, keepdim=False):
         """
-            Calculate Lorenz factors
+            Calculate Lorentz factors
         """
         x_norm = x.pow(2).sum(dim=dim, keepdim=keepdim)
         # TODO: test the effects of the clipping function.
-        # x_norm = torch.clamp(x_norm, 0, 0.9)
+        #   Appears to have no discernible effect? (further testing needed)
+        x_norm = torch.clamp(x_norm, 0, 0.9)
         tmp = 1 / torch.sqrt(1 - x_norm)
         return tmp
 
