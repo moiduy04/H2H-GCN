@@ -157,8 +157,6 @@ def get_mean_std(acc):
 
 
 if __name__ == '__main__':
-    # torch.use_deterministic_algorithms(True)
-
     args = parser.parse_args()
     logging.getLogger().setLevel(logging.INFO)
     if args.log_to_stdout:
