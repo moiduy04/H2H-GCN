@@ -9,7 +9,7 @@ from sklearn.metrics import roc_auc_score, average_precision_score
 
 from models.encoder import H2HGCN
 from models.decoder import NCDecoder
-from layers import FermiDiracDecoder
+from layers import FermiDiracDecoder, CentroidDistance
 from manifolds import LorentzManifold
 from utils.eval_utils import acc_f1
 
@@ -77,6 +77,14 @@ class NCModel(BaseModel):
 
         if not args.cuda == -1:
             self.weights = self.weights.to(args.device)
+
+        self.distance = CentroidDistance(args, 1, LorentzManifold)
+    
+    def encode(self, x, adj_list, adj_mask):
+        node_repr = super().encode(x, adj_list, adj_mask)
+        mask = torch.ones((node_repr.size(0),1)).cuda().to(self.args.device)
+        _, node_centroid_sim = self.distance(node_repr, mask) 
+        return node_centroid_sim.squeeze()
 
     def decode(self, h, adj_list, idx):
         output = self.decoder.decode(h, adj_list)
