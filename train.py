@@ -37,10 +37,8 @@ def train(args):
     # TODO: fix/ change/ reimplement the 'load_data' function.
     #   currently it doesn't support any dataset other than 'disease'
     data = load_data(args, os.path.join('./data', args.dataset))
-    _, data_feature_dim = data['features'].shape
-    if data_feature_dim != args.feature_dim:
-        warnings.warn(f'feature_dim mismatch between data ({data_feature_dim}) '
-                      f'and args ({args.feature_dim})')
+    args.n_nodes, args.feat_dim = data['features'].shape
+
     # --model--
     if args.task == 'nc':
         args.n_classes = int(data['labels'].max() + 1)

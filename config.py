@@ -33,7 +33,7 @@ config_args = {
         'weight_decay': (0.0, 'weight decay'),
         'proj_init': ('xavier', 'the way to initialize parameters'),
         'num_centroid': (200, 'number of centroids'),
-        'feature_dim': (1, 'input feature dimensionality',),
+        'feat_dim': (1, 'input feature dimensionality',),
         'pre_trained': (False, 'whether use pre-train model'),
     },
     'model_config': {
@@ -63,6 +63,7 @@ config_args = {
         'n_classes': (0, 'automatically set based on task and dataset'),
         'n_edges': (0, 'automatically set based on task and dataset'),
         'n_false_edges': (0, 'automatically set based on task and dataset'),
+        'n_nodes': (-1, 'number of nodes in data (used for debug)')
     }
 }
 
