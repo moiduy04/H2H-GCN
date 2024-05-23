@@ -16,7 +16,7 @@ from utils.pre_utils import set_seed, categorize_params
 from utils.data_utils import load_data
 from utils.train_utils import format_metrics
 
-warnings.filterwarnings('once')
+warnings.filterwarnings('ignore')
 
 
 def train(args):
