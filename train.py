@@ -20,7 +20,7 @@ warnings.filterwarnings('once')
 
 
 def train(args):
-    # set args params
+    # init args params
     if int(args.double_precision):
         torch.set_default_dtype(torch.float64)
     args.device = 'cuda:' + str(args.cuda) if int(args.cuda) >= 0 else 'cpu'
@@ -42,14 +42,14 @@ def train(args):
     # --model--
     if args.task == 'nc':
         args.n_classes = int(data['labels'].max() + 1)
-        model = LPModel(args)
         logging.info(f'Node classification with {args.n_classes} classes')
+        model = LPModel(args)
     elif args.task == 'lp':
         args.n_false_edges = len(data['train_edges_false'])
         args.n_edges = len(data['train_edges'])
-        model = NCModel(args)
         logging.info(f'Link prediction with {args.n_edges} "true" edges'
                      f'and {args.n_false_edges} false edges')
+        model = NCModel(args)
     else:
         raise ValueError(
             'Only link prediction (lp) or node classification (nc) tasks are supported.')
@@ -95,9 +95,15 @@ def train(args):
         stie_optim.zero_grad()
         eucl_optim.zero_grad()
 
-        embeddings = model.encode(data['features'], data['hgnn_adj'], data['hgnn_weight'])
-        loss, train_metrics = model.compute_metrics(embeddings, data, 'train')
-        loss.backward()
+        embeddings = model.encode(data['features'], data['hgnn_adj'], data['hgnn_weight']) 
+        train_metrics = model.compute_metrics(embeddings, data, 'train')
+        train_metrics['loss'].backward()
+
+        if args.grad_clip is not None: # copy-pasted
+            max_norm = float(args.grad_clip)
+            all_params = list(model.parameters())
+            for param in all_params:
+                torch.nn.utils.clip_grad_norm_(param, max_norm)
 
         stie_optim.step()
         eucl_optim.step()
@@ -106,7 +112,7 @@ def train(args):
 
         if epoch % args.log_freq:  # almost copy-pasted
             logging.info(" ".join(['Epoch: {:04d}'.format(epoch + 1),
-                                   'lr: {:04f}, stie_lr: {:04f}'.format(
+                                   'eucl_lr: {:04f}, stie_lr: {:04f}'.format(
                                        eucl_lr_scheduler.get_lr()[0],
                                        stie_lr_scheduler.get_lr()[0]
                                    ),
@@ -124,6 +130,7 @@ def train(args):
                 logging.info(" ".join(
                     ['Epoch: {:04d}'.format(epoch + 1), format_metrics(val_metrics, 'val')]))
             if model.compare_metrics(best_val_metrics, val_metrics):
+                best_test_metrics = model.compute_metrics(embeddings, data, 'test')
                 best_val_metrics = val_metrics
                 counter = 0
             else:
@@ -133,7 +140,7 @@ def train(args):
                     break
 
     logging.info("Done")
-    logging.info(f"Time elapsed {time.time() - t_begin}")
+    logging.info("Time elapsed {:.4f}s".format(time.time() - t_begin))
 
     assert best_test_metrics is not None
     if args.task == 'lp':
