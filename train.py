@@ -21,7 +21,6 @@ warnings.filterwarnings('ignore')
 
 def train(args):
     # init args params
-    print(f'log prequency is {args.log_freq}')
     if int(args.double_precision):
         torch.set_default_dtype(torch.float64)
     args.device = 'cuda:' + str(args.cuda) if int(args.cuda) >= 0 else 'cpu'
