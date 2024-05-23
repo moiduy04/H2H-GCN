@@ -90,7 +90,7 @@ def train(args):
     counter = 0
     best_val_metrics = model.init_metric_dict()
     best_test_metrics = None
-    for epoch in range(1, args.epochs + 1):
+    for epoch in range(args.epochs):
         t_epoch = time.time()
         model.train()
         stie_optim.zero_grad()
@@ -111,7 +111,7 @@ def train(args):
         stie_lr_scheduler.step()
         eucl_lr_scheduler.step()
 
-        if epoch % args.log_freq:  # almost copy-pasted
+        if (epoch + 1) % args.log_freq == 0:  # almost copy-pasted
             logging.info(" ".join(['Epoch: {:04d}'.format(epoch + 1),
                                    'eucl_lr: {:04f}, stie_lr: {:04f}'.format(
                                        eucl_lr_scheduler.get_lr()[0],
@@ -164,9 +164,9 @@ if __name__ == '__main__':
         logging.getLogger().addHandler(logging.StreamHandler(sys.stdout))
 
     set_seed(args, seed=args.seed)
-    logging.info(f'Using seed {args.seed} to generate {args.num_runs} seeds')
+    logging.info(f'Using seed {args.seed} to generate {args.num_runs} seed(s)')
     seeds = np.random.randint(0, 9999, size=args.num_runs).tolist()
-    logging.info(f'Generated seeds: {seeds}')
+    logging.info(f'Generated seed list: {seeds}')
 
     result_list = []
     for idx, seed in enumerate(seeds):
