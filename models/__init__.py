@@ -1,1 +1,1 @@
-from base_models import LPModel, NCModel
+from .base_models import LPModel, NCModel
