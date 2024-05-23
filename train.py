@@ -21,6 +21,7 @@ warnings.filterwarnings('ignore')
 
 def train(args):
     # init args params
+    print(f'log prequency is {args.log_freq}')
     if int(args.double_precision):
         torch.set_default_dtype(torch.float64)
     args.device = 'cuda:' + str(args.cuda) if int(args.cuda) >= 0 else 'cpu'
@@ -129,7 +130,7 @@ def train(args):
             if (epoch + 1) % args.log_freq == 0:
                 logging.info(" ".join(
                     ['Epoch: {:04d}'.format(epoch + 1), format_metrics(val_metrics, 'val')]))
-            if model.compare_metrics(best_val_metrics, val_metrics):
+            if model.has_improved(best_val_metrics, val_metrics):
                 best_test_metrics = model.compute_metrics(embeddings, data, 'test')
                 best_val_metrics = val_metrics
                 counter = 0
@@ -164,7 +165,7 @@ if __name__ == '__main__':
 
     set_seed(args, seed=args.seed)
     logging.info(f'Using seed {args.seed} to generate {args.num_runs} seeds')
-    seeds = np.random.randint(0, 5000, size=args.num_runs).tolist()
+    seeds = np.random.randint(0, 9999, size=args.num_runs).tolist()
     logging.info(f'Generated seeds: {seeds}')
 
     result_list = []
