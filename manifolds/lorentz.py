@@ -39,8 +39,6 @@ class LorentzManifold:
             Calculate Lorentz factors
         """
         x_norm = x.pow(2).sum(dim=dim, keepdim=keepdim)
-        # TODO: test the effects of the clipping function.
-        #   Appears to have no discernible effect? (further testing needed)
         x_norm = torch.clamp(x_norm, 0, 0.9)
         tmp = 1 / torch.sqrt(1 - x_norm)
         return tmp
