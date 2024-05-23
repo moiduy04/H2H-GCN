@@ -2,21 +2,53 @@
 ## *(reimplementation)*
 
 
-# Plan:
+### Changes:
+- Always encodes embeddings in Lorentz manifold.
+- Always trains weight parameters via SGD on the Stiefel manifold.
+- Assumes graph only has 1 message type.
+- Always ties all layer weights.
 
-### Notes on reimplementation:
-- Encoder
-  - Always encodes embeddings in Lorentz manifold.
-  - Always trains weight parameters via SGD on the Stiefel manifold.
-  - Assumes graph only has 1 message type.
-  - Always ties all layer weights.
-- Model
-  - Only supports Link Precdiction and Node classification tasks
+### Usage:
+#### For link prediction, run
+```
+python train.py \
+  --task lp \
+  --dataset disease_lp \
+  --normalize-feats 0 \
+  --epochs 1000 \
+  --step_lr_reduce_freq 5000 \
+  --patience 1000  \
+  --eucl_lr 0.001 \
+  --stie_lr 0.001 \
+  --dim 256 \
+  --feature_dim 11 \
+  --num-layers 2 \
+  --log-freq 20
+```
+
+#### For node classification, run
+```
+!python train.py \
+  --task nc \
+  --dataset disease_nc \
+  --epochs 1000 \
+  --step_lr_reduce_freq 5000 \
+  --euch_lr 0.01 \
+  --stie_lt 0.01 \
+  --num_centroid 200 \
+  --dim 64 \
+  --feature_dim 1000 \
+  --num-layers 5 \
+  --log-freq 20
+```
+
 
 ### File changes:
-- `/models` package is reimplemented from scratch.
+- `/models` package:
+  - `encoder.py` is reimplemented from scratch.
+  - Other files in `/models` received minor changes.
 - `train.py` is reimplemented and modified
-- `config.py` has unused flags removed and some config names changed for clarity. 
+- `config.py` has some unused flags removed and some config names changed for clarity. 
 - `/manifolds` package:
   - Lorentz and Stiefel manifold's functions are now `classmethod`, the classes themselves no longer take `args` as a param.
   - Added `GeometricTransformation` class handling projections between manifolds. 
