@@ -10,6 +10,7 @@ from sklearn.metrics import roc_auc_score, average_precision_score
 from models.encoder import H2HGCN
 from models.decoder import NCDecoder
 from layers import FermiDiracDecoder
+from manifolds import LorentzManifold
 from utils.eval_utils import acc_f1
 
 
@@ -18,6 +19,7 @@ class BaseModel(nn.Module):
         super(BaseModel, self).__init__()
         self.args = args
         self.encoder = H2HGCN(args)
+        self.c = torch.Tensor([1.]).cuda().to(args.device)
 
     def encode(self, x, adj_list, adj_mask):
         return self.encoder.encode(x, adj_list, adj_mask)
@@ -112,7 +114,7 @@ class LPModel(BaseModel):
     def decode(self, h, idx, split):
         emb_in = h[idx[:, 0], :]
         emb_out = h[idx[:, 1], :]
-        sqdist = self.manifold.sqdist(emb_in, emb_out, self.c)
+        sqdist = LorentzManifold.sqdist(emb_in, emb_out, self.c)
         probs = self.decoder.forward(sqdist, split)
         return probs
 
