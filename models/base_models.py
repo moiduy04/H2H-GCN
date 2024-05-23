@@ -119,7 +119,7 @@ class LPModel(BaseModel):
     def compute_metrics(self, embeddings, data, split):
         if split == 'train':
             edges_false = data[f'{split}_edges_false'][
-                np.random.randint(0, self.nb_false_edges, self.nb_edges)]
+                np.random.randint(0, self.n_false_edges, self.n_edges)]
         else:
             edges_false = data[f'{split}_edges_false']
         pos_scores = self.decode(embeddings, data[f'{split}_edges'], split)
