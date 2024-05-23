@@ -28,7 +28,7 @@ python train.py \
   --num-layers 2 \
   --skip-connections False \
   --log-freq 20 \
-  --log-to-stdout True
+  --log-to-stdout False
 ```
 
 #### For node classification, run
@@ -47,7 +47,7 @@ python train.py \
   --skip-connections False\
   --num_centroid 200 \
   --log-freq 20 \
-  --log-to-stdout True
+  --log-to-stdout False
 ```
 
 
