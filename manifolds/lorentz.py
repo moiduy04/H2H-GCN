@@ -9,10 +9,10 @@ from utils.pre_utils import *
 from manifolds import *
 from utils.math_utils import arcosh, cosh, sinh
 
+_eps = 1e-10
+
 
 class LorentzManifold:
-    _eps = 1e-10
-
     eps = 1e-3
     norm_clip = 1
     max_norm = 1e3
