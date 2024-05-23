@@ -10,7 +10,7 @@
 - Implements hyperbolic skip connections
 
 ### Usage:
-Set up environment according to `requirement.txt` and run `source set_env.sh`.
+Set up environment according to `requirement.txt`.
 #### For link prediction, run
 ```
 python train.py \
