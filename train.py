@@ -27,8 +27,8 @@ def train(args):
     args.dim = args.dim + 1  # add 1 because lorentz
     args.stie_vars = []
     args.eucl_vars = []
-    if not args.lr_reduce_freq:
-        args.lr_reduce_freq = args.epochs
+    if not args.step_lr_reduce_freq:
+        args.step_lr_reduce_freq = args.epochs
 
     logging.info(f'Using {args.device}')
 
