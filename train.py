@@ -43,13 +43,13 @@ def train(args):
     if args.task == 'nc':
         args.n_classes = int(data['labels'].max() + 1)
         logging.info(f'Node classification with {args.n_classes} classes')
-        model = LPModel(args)
+        model = NCModel(args)
     elif args.task == 'lp':
         args.n_false_edges = len(data['train_edges_false'])
         args.n_edges = len(data['train_edges'])
         logging.info(f'Link prediction with {args.n_edges} "true" edges'
                      f'and {args.n_false_edges} false edges')
-        model = NCModel(args)
+        model = LPModel(args)
     else:
         raise ValueError(
             'Only link prediction (lp) or node classification (nc) tasks are supported.')
