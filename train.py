@@ -89,7 +89,7 @@ def train(args):
     counter = 0
     best_val_metrics = model.init_metric_dict()
     best_test_metrics = None
-    for epoch in range(1, args.epoch + 1):
+    for epoch in range(1, args.epochs + 1):
         t_epoch = time.time()
         model.train()
         stie_optim.zero_grad()
