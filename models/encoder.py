@@ -45,7 +45,7 @@ class H2HGCN(nn.Module):
         W = torch.cat((_col, self.msg_weight), dim=1)
         _row = torch.zeros((1, self.args.dim)).cuda().to(self.args.device)
         _row[0, 0] = 1
-        W = torch.cat((_col, W), dim=0)
+        W = torch.cat((_row, W), dim=0)
         return W
 
     def aggregate(self, node_repr, n_nodes, max_neighbours, mask):

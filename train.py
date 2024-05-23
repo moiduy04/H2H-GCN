@@ -47,7 +47,7 @@ def train(args):
     elif args.task == 'lp':
         args.n_false_edges = len(data['train_edges_false'])
         args.n_edges = len(data['train_edges'])
-        logging.info(f'Link prediction with {args.n_edges} "true" edges'
+        logging.info(f'Link prediction with {args.n_edges} "true" edges '
                      f'and {args.n_false_edges} false edges')
         model = LPModel(args)
     else:
