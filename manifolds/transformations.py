@@ -50,7 +50,7 @@ class GeometricTransformations:
         k_norm_square = k.pow(2).sum(-1, keepdim=True)
         k_norm_square = torch.clamp(k_norm_square, max=0.9)
         ones = torch.ones((k.size(0), 1)).cuda().to(device)
-        tmp1 = torch.cat((ones, x), dim=1)
+        tmp1 = torch.cat((ones, k_norm_square), dim=1)
         tmp2 = 1.0 / torch.sqrt(1.0 - k_norm_square)
         x = (tmp1 * tmp2)
         return x
