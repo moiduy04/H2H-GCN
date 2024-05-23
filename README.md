@@ -8,6 +8,7 @@
 - Assumes graph only has 1 message type.
 - Always ties all layer weights.
 
+
 ### Usage:
 #### For link prediction, run
 ```
@@ -23,29 +24,27 @@ python train.py \
   --stie_lr 0.001 \
   --dim 256 \
   --num-layers 2 \
-  --log-freq 20 \
-  --log-to-stdout False
+  --log-freq 20
 ```
 
 #### For node classification, run
 ```
-!python train.py \
+python train.py \
   --task nc \
   --dataset disease_nc \
   --num_runs 1 \
   --epochs 1000 \
   --step_lr_reduce_freq 5000 \
-  --euch_lr 0.01 \
-  --stie_lt 0.01 \
+  --eucl_lr 0.01 \
+  --stie_lr 0.01 \
   --dim 64 \
   --num-layers 5 \
   --num_centroid 200 \
-  --log-freq 20 \
-  --log-to-stdout False
+  --log-freq 20
 ```
 
 
-### File changes:
+### List of file changes:
 - `/models` package:
   - `encoder.py` is reimplemented from scratch.
   - Other files in `/models` received minor changes.
@@ -55,3 +54,4 @@ python train.py \
   - Lorentz and Stiefel manifold's functions are now `classmethod`, the classes themselves no longer take `args` as a param.
   - Added `GeometricTransformation` class handling projections between manifolds. 
 - `optimizers.rsgd.RiemannianSGD` takes the manifold directly from `__init__` instead of through `args`.
+- Other changes (if exists) are minor and not worth mentioning.
