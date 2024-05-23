@@ -62,7 +62,7 @@ class H2HGCN(nn.Module):
         node_repr = P.lorentz_to_klein(node_repr)
 
         # Get lorentz factor of each node - (n_nodes * max_neighbours,1)
-        lorentz_factor = LorentzManifold.lorenz_factor(node_repr, keepdim=True)
+        lorentz_factor = LorentzManifold.lorentz_factor(node_repr, keepdim=True)
         # Mask away nodes that aren't actually neighbours
         lorentz_factor = lorentz_factor * mask.view(-1, 1)
         # Reshape back to (n_nodes, max_neighbours, d-1 or 1)
