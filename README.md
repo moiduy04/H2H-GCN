@@ -15,15 +15,16 @@ python train.py \
   --task lp \
   --dataset disease_lp \
   --normalize-feats 0 \
+  --num_runs 1 \
   --epochs 1000 \
   --step_lr_reduce_freq 5000 \
   --patience 1000  \
   --eucl_lr 0.001 \
   --stie_lr 0.001 \
   --dim 256 \
-  --feature_dim 11 \
   --num-layers 2 \
-  --log-freq 20
+  --log-freq 20 \
+  --log-to-stdout False
 ```
 
 #### For node classification, run
@@ -31,15 +32,16 @@ python train.py \
 !python train.py \
   --task nc \
   --dataset disease_nc \
+  --num_runs 1 \
   --epochs 1000 \
   --step_lr_reduce_freq 5000 \
   --euch_lr 0.01 \
   --stie_lt 0.01 \
-  --num_centroid 200 \
   --dim 64 \
-  --feature_dim 1000 \
   --num-layers 5 \
-  --log-freq 20
+  --num_centroid 200 \
+  --log-freq 20 \
+  --log-to-stdout False
 ```
 
 

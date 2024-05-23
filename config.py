@@ -13,7 +13,7 @@ config_args = {
         'patience': (100, 'patience for early stopping'),
 
         'seed': (1234, 'seed for creating training seed'),
-        'num-runs': (1, 'number of training seeds to create and run'),
+        'num_runs': (1, 'number of training seeds to create and run'),
 
         'log-freq': (1, 'how often to compute print train/val metrics (in epochs)'),
         'log-to-stdout': (False, 'should the logger output immediately to stdout'),
