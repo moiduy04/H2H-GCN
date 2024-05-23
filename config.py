@@ -33,7 +33,6 @@ config_args = {
         'weight_decay': (0.0, 'weight decay'),
         'proj_init': ('xavier', 'the way to initialize parameters'),
         'num_centroid': (200, 'number of centroids'),
-        'feat_dim': (1, 'input feature dimensionality',),
         'pre_trained': (False, 'whether use pre-train model'),
     },
     'model_config': {
@@ -60,9 +59,11 @@ config_args = {
         'eucl_vars': ([], 'Euclidean parameters'),
         'split-seed': (0, 'seed for data splits (train/test/val), '
                              'automatically set by args.seed'),
-        'n_classes': (0, 'automatically set based on task and dataset'),
-        'n_edges': (0, 'automatically set based on task and dataset'),
-        'n_false_edges': (0, 'automatically set based on task and dataset'),
+        'n_classes': (0, 'number of classes  (nc task)'),
+        'n_edges': (0, 'number of (true) edges  (lp task)'),
+        'n_false_edges': (0, 'number of false edges  (lp task)'),
+
+        'feat_dim': (1, 'input feature dimensionality',),
         'n_nodes': (-1, 'number of nodes in data (used for debug)')
     }
 }
