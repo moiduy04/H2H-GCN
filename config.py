@@ -44,7 +44,8 @@ config_args = {
         'pretrained-embeddings': (None, 'path to pretrained embeddings'),
         'num-layers': (2, 'number of GNN layers'),
         'bias': (1, 'whether to use bias (1) or not (0)'),
-        'double-precision': (False, 'whether to use double precision')
+        'double-precision': (False, 'whether to use double precision'),
+        'skip-connections': (False, 'whether to add skip connections'),
     },
     'data_config': {
         'dataset': ('disease_lp', 'which dataset to use'),
@@ -64,7 +65,7 @@ config_args = {
         'n_false_edges': (0, 'number of false edges  (lp task)'),
 
         'feat_dim': (1, 'input feature dimensionality',),
-        'n_nodes': (-1, 'number of nodes in data (used for debug)')
+        'n_nodes': (-1, 'number of nodes in data (used for debug)'),
     }
 }
 

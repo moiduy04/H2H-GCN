@@ -84,6 +84,30 @@ class H2HGCN(nn.Module):
             )
         )
 
+    def skip_connection(self, node_repr1, node_repr2, *, n_nodes):
+        """
+        Averages 2 node represenations.
+        """
+        node_repr = torch.stack((node_repr1, node_repr2), dim=1)
+        node_repr = node_repr.view(n_nodes*2, -1)
+        # Project to klein
+        node_repr = P.lorentz_to_klein(node_repr)
+
+        # Get lorentz factor of each node - (n_nodes * 2,1)
+        lorentz_factor = LorentzManifold.lorentz_factor(node_repr, keepdim=True)
+        # Reshape back to (n_nodes, 2, d-1 or 1)
+        node_repr = node_repr.view(n_nodes, 2, -1)
+        lorentz_factor = lorentz_factor.view(n_nodes, 2, -1)
+        # Get the Einstein mid-point
+        node_repr = torch.sum(lorentz_factor * node_repr, dim=1, keepdim=True) \
+                    / torch.sum(lorentz_factor, dim=1, keepdim=True)
+        # squeeze (n_nodes, 1, d-1) to (n_nodes, d-1)
+        node_repr = node_repr.squeeze()
+
+        node_repr = P.klein_to_lorentz(node_repr, device=self.args.device)
+        return node_repr
+        pass
+
     def encode(self, node_repr, adj_list, adj_mask):
         """
         Generates hyperbolic node embeddings. 
@@ -101,6 +125,9 @@ class H2HGCN(nn.Module):
 
         for layer in range(self.args.num_layers):
             # TODO: add residual connections?
+            if self.args.skip_connections:
+                old_node_repr = node_repr
+
             node_repr = node_repr @ self.W
             # Select neighbours' node representations and aggregate them
             neighbours_node_repr = torch.index_select(node_repr, dim=0, index=adj_list.view(-1))
@@ -109,5 +136,7 @@ class H2HGCN(nn.Module):
                                        max_neighbours=adj_list.size(1),
                                        mask=adj_mask)
             node_repr = self.apply_activation(node_repr)
+            if self.args.skip_connections:
+                node_repr = self.skip_connection(old_node_repr, node_repr, n_nodes=adj_list.size(0))
             node_repr = LorentzManifold.normalize(node_repr)
         return node_repr
