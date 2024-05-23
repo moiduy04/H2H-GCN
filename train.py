@@ -136,6 +136,8 @@ def train(args):
 
     logging.info("Done")
     logging.info(f"Time elapsed {time.time() - t_begin}")
+
+    assert best_test_metrics is not None
     if args.task == 'lp':
         return best_test_metrics['roc']
     if args.task == 'nc':
