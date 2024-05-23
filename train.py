@@ -120,7 +120,7 @@ def train(args):
                                    format_metrics(train_metrics, 'train'),
                                    'time: {:.4f}s'.format(time.time() - t_epoch)
                                    ]))
-        if epoch % args.eval_freq:  # almost copy-pasted
+        if (epoch + 1) % args.eval_freq == 0:  # almost copy-pasted
             model.eval()
             embeddings = model.encode(data['features'], data['hgnn_adj'], data['hgnn_weight'])
             for i in range(embeddings.size(0)):
@@ -140,8 +140,8 @@ def train(args):
                     logging.info("Early stopping")
                     break
 
-    logging.info("Done")
-    logging.info("Time elapsed {:.4f}s".format(time.time() - t_begin))
+    logging.info("Optimization Finished!")
+    logging.info("Total time elapsed: {:.4f}s".format(time.time() - t_begin))
 
     assert best_test_metrics is not None
     if args.task == 'lp':

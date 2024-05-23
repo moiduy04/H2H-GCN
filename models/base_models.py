@@ -66,7 +66,7 @@ class NCModel(BaseModel):
         super(NCModel, self).__init__(args)
         assert args.n_classes > 0
 
-        self.decoder = NCDecoder(args)
+        self.decoder = NCDecoder(self.c, args)
 
         if args.n_classes > 2:
             self.f1_average = 'micro'
