@@ -151,7 +151,7 @@ def train(args):
 
 
 def get_mean_std(acc):
-    if any(a < 0 for a in acc):
+    if all(a <= 1 for a in acc):
         acc = [a * 100 for a in acc]
     return np.mean(acc), np.std(acc)
 
@@ -171,7 +171,7 @@ if __name__ == '__main__':
     for idx, seed in enumerate(seeds):
         args = parser.parse_args()
         set_seed(args, seed=seed)
-        logging.info(f'Run no.{idx+1}, seed = {seed}')
+        logging.info(f'Run No.{idx+1}, seed = {seed}')
         result = train(args)
         result_list.append(result)
         print(f'Current result list:\n{result_list}')
