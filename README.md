@@ -10,12 +10,14 @@
 
 
 ### Usage:
+Set up environment according to `requirement.txt` and run `source set_env.sh`.
 #### For link prediction, run
 ```
 python train.py \
   --task lp \
   --dataset disease_lp \
   --normalize-feats 0 \
+  --seed 1234 \
   --num_runs 1 \
   --epochs 1000 \
   --step_lr_reduce_freq 5000 \
@@ -34,6 +36,7 @@ python train.py \
 python train.py \
   --task nc \
   --dataset disease_nc \
+  --seed 1234 \
   --num_runs 1 \
   --epochs 1000 \
   --step_lr_reduce_freq 5000 \
