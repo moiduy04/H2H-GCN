@@ -18,7 +18,7 @@ python train.py \
   --dataset disease_lp \
   --normalize-feats 0 \
   --seed 1234 \
-  --num_runs 1 \
+  --num_runs 10 \
   --epochs 1000 \
   --step_lr_reduce_freq 5000 \
   --patience 1000  \
@@ -37,14 +37,14 @@ python train.py \
   --task nc \
   --dataset disease_nc \
   --seed 1234 \
-  --num_runs 1 \
+  --num_runs 10 \
   --epochs 1000 \
   --step_lr_reduce_freq 5000 \
   --eucl_lr 0.01 \
   --stie_lr 0.01 \
   --dim 64 \
   --num-layers 5 \
-  --skip-connections False\
+  --skip-connections False \
   --num_centroid 200 \
   --log-freq 20 \
   --log-to-stdout False
