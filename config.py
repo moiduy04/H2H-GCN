@@ -10,7 +10,7 @@ config_args = {
         'epochs': (5000, 'maximum number of epochs to train for'),
         'weight-decay': (0., 'l2 regularization strength'),
         'momentum': (0.999, 'momentum in Euclidean optimizer'),
-        'patience': (100, 'patience for early stopping'),
+        'patience': (200, 'patience for early stopping'),
 
         'seed': (1234, 'seed for creating training seed'),
         'num_runs': (1, 'number of training seeds to create and run'),
