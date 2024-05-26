@@ -30,7 +30,6 @@ python train.py \
   --log-freq 20 \
   --log-to-stdout False
 ```
-
 #### For node classification, run
 ```
 python train.py \
@@ -86,5 +85,6 @@ python train.py \
 - `/models` package:
   - `encoder.py` is reimplemented from scratch.
   - Other files in `/models` received minor changes.
+- `/utils/visualization.py` package added
 - `config.py` has some unused flags removed and some config names changed for clarity.
 - `train.py` is reimplemented and modified
