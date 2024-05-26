@@ -8,7 +8,7 @@ config_args = {
         'eucl_lr': (0.01, 'learning rate for Euclidean parameters'),
         'cuda': (0, 'which cuda device to use (-1 for cpu training)'),
         'epochs': (5000, 'maximum number of epochs to train for'),
-        'weight-decay': (0., 'l2 regularization strength'),
+        'weight-decay': (0.01, 'l2 regularization strength'),
         'momentum': (0.999, 'momentum in Euclidean optimizer'),
         'patience': (200, 'patience for early stopping'),
 
@@ -30,9 +30,9 @@ config_args = {
         'step_lr_gamma': (0.1, 'gamma for StepLR scheduler'),
         'step_lr_reduce_freq': (500, 'step size for StepLR scheduler'),
 
-        'weight_decay': (0.0, 'weight decay'),
+        'weight_decay': (0.001, 'weight decay'),
         'proj_init': ('xavier', 'the way to initialize parameters'),
-        'num_centroid': (200, 'number of centroids'),
+        'num_centroid': (300, 'number of centroids'),
         'pre_trained': (False, 'whether use pre-train model'),
     },
     'model_config': {
@@ -42,10 +42,12 @@ config_args = {
         'r': (2., 'fermi-dirac decoder parameter for lp'),
         't': (1., 'fermi-dirac decoder parameter for lp'),
         'pretrained-embeddings': (None, 'path to pretrained embeddings'),
-        'num-layers': (2, 'number of GNN layers'),
+        'num-layers': (3, 'number of GNN layers'),
         'bias': (1, 'whether to use bias (1) or not (0)'),
         'double-precision': (False, 'whether to use double precision'),
         'skip-connections': (False, 'whether to add skip connections'),
+        'skip_position': ([0, 1], 'Connection skip-connection step size'),
+        'ema': (0.99, 'Exponential Modal Average')
     },
     'data_config': {
         'dataset': ('disease_lp', 'which dataset to use'),

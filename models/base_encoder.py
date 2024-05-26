@@ -5,8 +5,6 @@ import torch.nn as nn
 from manifolds import LorentzManifold, StiefelManifold
 from manifolds.transformations import GeometricTransformations as P
 
-import copy
-
 
 class H2HGCN(nn.Module):
     """
@@ -30,12 +28,10 @@ class H2HGCN(nn.Module):
         self.msg_weight = nn.Parameter(
             torch.zeros([args.dim - 1, args.dim - 1], requires_grad=True)
         )
-        self.skip_ema = nn.Parameter( torch.Tensor([1 - args.ema, args.ema])).unsqueeze(1).to('cuda:0').detach()
-        print("Ema weight:", self.skip_ema)
-        
         nn.init.orthogonal_(self.msg_weight)
         # Actual message weights will be updated every time encode() is called
         self.W = None
+
         # Add params to args for optimizer access.
         args.eucl_vars.append(self.linear)
         args.stie_vars.append(self.msg_weight)
@@ -71,13 +67,13 @@ class H2HGCN(nn.Module):
         lorentz_factor = lorentz_factor * mask.view(-1, 1)
         # Reshape back to (n_nodes, max_neighbours, d-1 or 1)
         node_repr = node_repr.view(n_nodes, max_neighbours, -1)
-        lorentz_factor = lorentz_factor.view(n_nodes, max_neighbours, -1) 
+        lorentz_factor = lorentz_factor.view(n_nodes, max_neighbours, -1)
         # Get the Einstein mid-point
         node_repr = torch.sum(lorentz_factor * node_repr, dim=1, keepdim=True) \
                     / torch.sum(lorentz_factor, dim=1, keepdim=True)
         # squeeze (n_nodes, 1, d-1) to (n_nodes, d-1)
         node_repr = node_repr.squeeze()
-        # node_repr = self.activation(node_repr)
+
         node_repr = P.klein_to_lorentz(node_repr, device=self.args.device)
         return node_repr
 
@@ -101,14 +97,13 @@ class H2HGCN(nn.Module):
         lorentz_factor = LorentzManifold.lorentz_factor(node_repr, keepdim=True)
         # Reshape back to (n_nodes, 2, d-1 or 1)
         node_repr = node_repr.view(n_nodes, 2, -1)
-        lorentz_factor = lorentz_factor.view(n_nodes, 2, -1) * self.skip_ema
+        lorentz_factor = lorentz_factor.view(n_nodes, 2, -1)
         # Get the Einstein mid-point
         node_repr = torch.sum(lorentz_factor * node_repr, dim=1, keepdim=True) \
                     / torch.sum(lorentz_factor, dim=1, keepdim=True)
         # squeeze (n_nodes, 1, d-1) to (n_nodes, d-1)
         node_repr = node_repr.squeeze()
-        # add in activation
-        # node_repr = self.activation(node_repr)
+
         node_repr = P.klein_to_lorentz(node_repr, device=self.args.device)
         return node_repr
         pass
@@ -125,9 +120,6 @@ class H2HGCN(nn.Module):
         node_repr = self.activation(self.linear(node_repr))
         node_repr = LorentzManifold.exp_map_zero(node_repr)
 
-
-        index = 0
-        # old_node_repr = 0
         # Get message weight
         self.W = self._get_msg_weight()
 
@@ -136,18 +128,15 @@ class H2HGCN(nn.Module):
             if self.args.skip_connections:
                 old_node_repr = node_repr
 
-            node_repr_cont = node_repr @ self.W
+            node_repr = node_repr @ self.W
             # Select neighbours' node representations and aggregate them
-            neighbours_node_repr = torch.index_select(node_repr_cont, dim=0, index=adj_list.view(-1))
-            node_repr_cont = self.aggregate(neighbours_node_repr,
+            neighbours_node_repr = torch.index_select(node_repr, dim=0, index=adj_list.view(-1))
+            node_repr = self.aggregate(neighbours_node_repr,
                                        n_nodes=adj_list.size(0),
                                        max_neighbours=adj_list.size(1),
                                        mask=adj_mask)
-            node_repr_cont = self.apply_activation(node_repr_cont)
-            if self.args.skip_connections and index > 1 and index < self.args.num_layers - 1: 
-                node_repr = self.skip_connection(old_node_repr, node_repr_cont, n_nodes=adj_list.size(0))
-            else:
-                node_repr = node_repr_cont
+            node_repr = self.apply_activation(node_repr)
+            if self.args.skip_connections:
+                node_repr = self.skip_connection(old_node_repr, node_repr, n_nodes=adj_list.size(0))
             node_repr = LorentzManifold.normalize(node_repr)
-            index += 1
         return node_repr
