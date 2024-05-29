@@ -17,7 +17,8 @@ class H2HGCN(nn.Module):
         super(H2HGCN, self).__init__()
         self.args = args
 
-        self.activation = nn.SELU()
+        self.k_activation = nn.SELU()
+        self.l_activation = nn.Tanh()
 
         # Linear projection from feat_dim to dim
         self.linear = nn.Linear(args.feat_dim, args.dim)
@@ -48,6 +49,8 @@ class H2HGCN(nn.Module):
         W = torch.cat((_row, W), dim=0)
         return W
 
+    # def 
+
     def aggregate(self, node_repr, n_nodes, max_neighbours, mask):
         """
         Aggregates all neighbours' messages.
@@ -59,6 +62,7 @@ class H2HGCN(nn.Module):
         :return: (n_nodes, d) - aggregated node representations
         """
         # Project to klein
+        self.apply_activation(node_repr, self.k_activation)
         node_repr = P.lorentz_to_klein(node_repr)
 
         # Get lorentz factor of each node - (n_nodes * max_neighbours,1)
@@ -77,11 +81,11 @@ class H2HGCN(nn.Module):
         node_repr = P.klein_to_lorentz(node_repr, device=self.args.device)
         return node_repr
 
-    def apply_activation(self, node_repr):
+    def apply_activation(self, node_repr, activation, scale=1.):
         return P.poincare_to_lorentz(
-            self.activation(
+            activation(
                 P.lorentz_to_poincare(node_repr)
-            )
+            ) * scale
         )
 
     def skip_connection(self, node_repr1, node_repr2, *, n_nodes):
@@ -117,7 +121,7 @@ class H2HGCN(nn.Module):
         :return: (n_nodes, d) - Hyperbolic node embeddings
         """
         # Project to Lorentz manifold
-        node_repr = self.activation(self.linear(node_repr))
+        node_repr = self.l_activation(self.linear(node_repr)) * 1.3
         node_repr = LorentzManifold.exp_map_zero(node_repr)
 
         # Get message weight
@@ -135,7 +139,7 @@ class H2HGCN(nn.Module):
                                        n_nodes=adj_list.size(0),
                                        max_neighbours=adj_list.size(1),
                                        mask=adj_mask)
-            node_repr = self.apply_activation(node_repr)
+            node_repr = self.apply_activation(node_repr, self.k_activation)
             if self.args.skip_connections:
                 node_repr = self.skip_connection(old_node_repr, node_repr, n_nodes=adj_list.size(0))
             node_repr = LorentzManifold.normalize(node_repr)

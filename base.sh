@@ -1,0 +1,15 @@
+python train.py \
+  --task lp \
+  --dataset disease_lp \
+  --normalize-feats 0 \
+  --seed 1234 \
+  --num_runs 10 \
+  --epochs 1500 \
+  --patience 1000 \
+  --step_lr_reduce_freq 5000 \
+  --eucl_lr 0.001 \
+  --stie_lr 0.001 \
+  --dim 256 \
+  --num-layers 2 \
+  --log-freq 20 \
+  --log-to-stdout False

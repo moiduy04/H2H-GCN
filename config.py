@@ -45,7 +45,7 @@ config_args = {
         'num-layers': (3, 'number of GNN layers'),
         'bias': (1, 'whether to use bias (1) or not (0)'),
         'double-precision': (False, 'whether to use double precision'),
-        'skip-connections': (False, 'whether to add skip connections'),
+        'skip_connections': (False, 'whether to add skip connections'),
         'skip_position': ([0, 1], 'Connection skip-connection step size'),
         'ema': (0.99, 'Exponential Modal Average')
     },

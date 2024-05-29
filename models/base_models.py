@@ -6,8 +6,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from sklearn.metrics import roc_auc_score, average_precision_score
-
-from models.encoder import H2HGCN
+# Refer to base_encoder to recover original code
+from models.base_encoder import H2HGCN
 from models.decoder import NCDecoder
 from layers import FermiDiracDecoder, CentroidDistance
 from manifolds import LorentzManifold
