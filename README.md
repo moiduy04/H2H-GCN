@@ -1,6 +1,7 @@
 # H2H-GCN
 ### *(reimplementation)*
 
+The accompanying report can be found [here](https://drive.google.com/file/d/1pyjPereq_i3DwwFBo7wUfhWXk47TVRLO/view?usp=sharing)
 
 ### Changes:
 - Always encodes embeddings in Lorentz manifold.
@@ -26,9 +27,7 @@ python train.py \
   --stie_lr 0.001 \
   --dim 256 \
   --num-layers 2 \
-  --skip-connections False \
   --log-freq 20 \
-  --log-to-stdout False
 ```
 #### For node classification, run
 ```
@@ -43,10 +42,8 @@ python train.py \
   --stie_lr 0.01 \
   --dim 64 \
   --num-layers 5 \
-  --skip-connections False \
   --num_centroid 200 \
   --log-freq 20 \
-  --log-to-stdout False
 ```
 
 #### Optional arguments:  
