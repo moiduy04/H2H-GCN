@@ -153,7 +153,7 @@ def train(args):
 def get_mean_std(acc):
     if all(a <= 1 for a in acc):
         acc = [a * 100 for a in acc]
-    return np.mean(acc), np.std(acc)
+    return np.quantile(acc, q=0.5), np.std(acc)
 
 
 if __name__ == '__main__':

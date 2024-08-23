@@ -16,7 +16,7 @@ def k2l_gamma(x, y):
     return gamma
 
 def p2l(x, y):
-    gamma = 1 / (1 - x ** 2 - y ** 2)
+    gamma =1 - x ** 2 - y ** 2
     return 2 * x / gamma, 2 * y / gamma, (1 + x ** 2 + y ** 2) / gamma
 
 def line(a, b, c, bound=1, steps=200, mode='circle', balance=0.):
@@ -41,6 +41,9 @@ def ein_midpoint_k(x, y, gamma):
      de =  np.sum(gamma) 
      return np.sum(x * gamma) / de, np.sum(y * gamma) / de
 
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
 def line_plot(ax, x, y, z, color):
     if z is not None: 
         for i in range(x.shape[0] - 1):
@@ -58,7 +61,9 @@ zz = np.sqrt(np.linalg.norm(mesh, axis=2) ** 2 + 1)
 mesh = np.concatenate([mesh, zz[:, :, None]], axis=2)
 
 # a, b, c = 1, 2, -1
-ky, kx = line(2, 4, 3, bound=0.9, balance=0.2)
+ky, kx = line(1, -1, 0, bound=0.9, balance=0.)
+kx = sigmoid(kx)
+ky = sigmoid(ky)
 # Lorentz
 gamma = k2l_gamma(kx, ky)
 
